@@ -1,4 +1,4 @@
-;;; etymonline.el --- summary
+;;; etymonline.el --- summary -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; etymonline
 
@@ -85,9 +85,9 @@
 	 (defs (-map reify pair-defs)))
     defs))
 
-(defun etym/parse (&rest status)
+(defun etym/parse (term &rest status)
   "B."
-  (message "[HTTP] %S" status)
+  (message "[HTTP] %S -> %S" term status)
   (with-current-buffer (current-buffer)
     (etym/do-kill-http-header (current-buffer))
     (let* ((dom (libxml-parse-html-region (point-min) (point-max)))
@@ -105,7 +105,9 @@
 (defun etym/main (term)
   "Prompt for TERM and query its etymology."
   (interactive "sTerm: ")
-  (url-retrieve (format *etym/url* term) #'etym/parse))
+  (let ((callback (lambda (&rest status)
+		    (etym/parse term status))))
+   (url-retrieve (format *etym/url* term) callback)))
 
 
 ;;; TODO
