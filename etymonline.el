@@ -8,7 +8,7 @@
 
 (setq lexical-binding t)
 
-(defvar *etym/url-schema* "http://etymonline.com/index.php?search=%s")
+(defvar *etym/url* "http://etymonline.com/index.php?search=%s")
 
 ;; GLOBAL url -> html -> dom -> dom' -> text
 
@@ -105,8 +105,7 @@
 (defun etym/main (term)
   "Prompt for TERM and query its etymology."
   (interactive "sTerm: ")
-  (url-retrieve (format *etym/url-schema* term)
-		#'etym/parse))
+  (url-retrieve (format *etym/url* term) #'etym/parse))
 
 
 ;;; TODO
