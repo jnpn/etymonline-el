@@ -1,6 +1,8 @@
 ;;; etymonline.el --- summary -*- lexical-binding: t -*-
 ;;; Commentary:
-;;; etymonline
+;;; Query Etymonline.com for etymology.
+;;;
+;;;   url -> html -> dom -> dom' -> text
 
 ;;; Code:
 
@@ -10,8 +12,6 @@
 
 (defvar *etym/site* "etymonline.com")
 (defvar *etym/url* "http://etymonline.com/index.php?search=%s")
-
-;; GLOBAL url -> html -> dom -> dom' -> text
 
 ;;; HTTP
 
