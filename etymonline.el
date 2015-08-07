@@ -8,6 +8,7 @@
 
 (setq lexical-binding t)
 
+(defvar *etym/site* "etymonline.com")
 (defvar *etym/url* "http://etymonline.com/index.php?search=%s")
 
 ;; GLOBAL url -> html -> dom -> dom' -> text
@@ -92,15 +93,16 @@
     (etym/do-kill-http-header (current-buffer))
     (let* ((dom (libxml-parse-html-region (point-min) (point-max)))
 	   (res (etym/find-results dom)))
-      (etym/present-results res))))
+      (etym/present-results term res))))
 
-(defun etym/present-results (defs)
-  "DEFS: (TERM term DEF def)."
-  (with-output-to-temp-buffer (get-buffer-create "WAT")
-    (switch-to-buffer-other-window "WAT")
-    (-each defs
-      (lambda (d)
-	(insert (format "%s -> %s\n" (capitalize (nth 1 d)) (nth 3 d)))))))
+(defun etym/present-results (term defs)
+  "TERM DEFS: (TERM term DEF def)."
+  (let ((bn (format "%s @ %s" term *etym/site*)))
+   (with-output-to-temp-buffer (get-buffer-create bn)
+     (switch-to-buffer-other-window bn)
+     (-each defs
+       (lambda (d)
+	 (insert (format "%s -> %s\n" (capitalize (nth 1 d)) (nth 3 d))))))))
 
 (defun etym/main (term)
   "Prompt for TERM and query its etymology."
