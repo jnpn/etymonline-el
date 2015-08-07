@@ -12,6 +12,7 @@
 
 (defvar *etym/site* "etymonline.com")
 (defvar *etym/url* "http://etymonline.com/index.php?search=%s")
+(defvar *etym/defs-fmt* "%s -> %s\n")
 
 ;;; HTTP
 
@@ -95,7 +96,7 @@
      (switch-to-buffer-other-window bn)
      (-each defs
        (-lambda ((sterm sdef))
-	 (insert (format "%s -> %s\n" (capitalize sterm) sdef)))))))
+	 (insert (format *etym/defs-fmt* (capitalize sterm) sdef)))))))
 
 (defun etym/main (term)
   "Prompt for TERM and query its etymology."
