@@ -102,11 +102,11 @@
       (lambda (d)
 	(insert (format "%s -> %s\n" (capitalize (nth 1 d)) (nth 3 d)))))))
 
-(defun etym/main ()
-  "Test."
-  (let ((term "night"))
-    (url-retrieve (format *etym/url-schema* term)
-		  #'etym/parse)))
+(defun etym/main (term)
+  "Prompt for TERM and query its etymology."
+  (interactive "sTerm: ")
+  (url-retrieve (format *etym/url-schema* term)
+		#'etym/parse))
 
 
 ;;; TODO
