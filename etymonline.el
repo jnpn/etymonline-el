@@ -74,13 +74,10 @@
 ;;; MAIN
 
 (defun etym/find-results (dom)
-  "DOM : dl > (dt dd)... -> (term . definition)."
-  (let* ((seq-defs (dom/nodes (car (dom/simple-select dom 'dl))))
-	 (pair-defs (skip (-zip seq-defs (-drop 1 seq-defs))))
-	 (reify (lambda (def) (list :term (dom/alltext (car def))
-				    :def (dom/alltext (cdr def)))))
-	 (defs (-map reify pair-defs)))
-    defs))
+  "DOM : dl > (dt dd)... -> (term definition)..."
+  (let* ((first-dl (car (dom/simple-select dom 'dl)))
+	 (seq-defs (-map #'dom/alltext (dom/nodes first-dl))))
+    (-partition 2 seq-defs)))
 
 (defun etym/parse (term &rest status)
   "TERM &STATUS."
@@ -92,13 +89,13 @@
       (etym/present-results term res))))
 
 (defun etym/present-results (term defs)
-  "TERM DEFS: (TERM term DEF def)."
+  "TERM DEFS: (term def)..."
   (let ((bn (format "%s @ %s" term *etym/site*)))
    (with-output-to-temp-buffer (get-buffer-create bn)
      (switch-to-buffer-other-window bn)
      (-each defs
-       (lambda (d)
-	 (insert (format "%s -> %s\n" (capitalize (nth 1 d)) (nth 3 d))))))))
+       (-lambda ((sterm sdef))
+	 (insert (format "%s -> %s\n" (capitalize sterm) sdef)))))))
 
 (defun etym/main (term)
   "Prompt for TERM and query its etymology."
