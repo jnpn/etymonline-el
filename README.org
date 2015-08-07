@@ -1,0 +1,8 @@
+
+* Features
+
+** WIP history
+** thesaurus mode, general definition query on many websites
+** formatted presentation (grid layout or simple color scheme)
+** WIP tests, cleaning, refactoring
+
