@@ -10,9 +10,7 @@
 
 (defvar *etym/url-schema* "http://etymonline.com/index.php?search=%s")
 
-
 ;; GLOBAL url -> html -> dom -> dom' -> text
-
 
 ;;; HTTP
 
@@ -27,9 +25,6 @@
 
 ;;; DOM
 ;;; dom := (tag (attr...) dom-or-text...)
-
-;; (defun dom/children (d)
-;;   (-filter (lambda (_) (not (stringp _))) (cddr d)))
 
 (defsubst dom/tag (d)
   "Tag of D."
@@ -51,23 +46,11 @@
   "D dom -> [dom]."
   (-filter #'stringp (cddr d)))
 
-;; (defun dom/text (dom)
-;;   "@TODO DOM."
-;;   (treemap (compose #'concat #'text) dom))
-
 (defun dom/alltext (d)
   "D dom -> [text]."
   (apply #'concat
 	 (-flatten (append (-filter #'stringp (cddr d))
 			   (-map #'dom/alltext (dom/nodes d))))))
-
-(defun dom/walk (d)
-  "D."
-  (defun leafp (d) (or (stringp d) (atom d)))
-  (defun nodep (d) (not (leafp d)))
-  (cond ((leafp d) d)
-	;; isn't it treeidentity ?
-	((nodep d) (-map #'dom/walk (dom/allchildren d)))))
 
 (defun -flatmap (f l)
   "F L."
@@ -78,7 +61,6 @@
   (defun leafp (d) (or (stringp d) (atom d)))
   (defun nodep (d) (not (leafp d)))
   (cond ((leafp d) d)
-	;; isn't it treeidentity ?
 	((nodep d) (cons d (-flatmap #'dom/walk (dom/nodes d))))))
 
 (defvar *html0* (with-current-buffer "html.5.html"
@@ -87,20 +69,6 @@
 
 
 ;;; DOM SELECTOR
-
-;; (defun etym/find-results (dom)
-;;   "FAIL. DOM : dl > (dt dd)... -> (term . definition)."
-;;   (let* ((defs (-map #'dom/text (etym/select "dl")))
-;; 	 (pairs (-zip defs (-drop 1 defs))))
-;;     pairs))
-
-;; (defun dom/select (dom selector)
-;;   "TODO DOM: dom tree, SELECTOR: css dom selector."
-;;   (if (null dom)
-;;       nil
-;;     (if (eq (dom/tag dom) selector)
-;; 	dom
-;;       (dom/select ...))))
 
 (defun dom/simple-select (dom tag)
   "DOM TAG."
@@ -124,16 +92,13 @@
     (etym/do-kill-http-header (current-buffer))
     (let* ((dom (libxml-parse-html-region (point-min) (point-max)))
 	   (res (etym/find-results dom)))
-      ;;(message "%S" res)
-      (etym/present-results res)
-      )))
+      (etym/present-results res))))
 
 (defun etym/present-results (defs)
   "DEFS: (TERM term DEF def)."
   (with-output-to-temp-buffer (get-buffer-create "WAT")
     (switch-to-buffer-other-window "WAT")
     (-each defs
-      ;;(-lambda (_ sterm _ sdef) (message "%s -> %s" (capitalize sterm) sdef))
       (lambda (d)
 	(insert (format "%s -> %s\n" (capitalize (nth 1 d)) (nth 3 d)))))))
 
@@ -143,7 +108,6 @@
     (url-retrieve (format *etym/url-schema* term)
 		  #'etym/parse)))
 
-(etym/main)
 
 ;;; TODO
 ;;; - history
@@ -218,24 +182,6 @@
 				    :def (dom/text (cdr def))))))
     (-map reify pair-defs)))
 
-;; (test-dt-text-all-2)
-;; -->
-;; ((:term " night-owl (n.)" :def "\"owl which flies at night,\" 1590s; applied since 1846 (American English) to persons who are up or out late at night. Compare , also French  \"prostitute,\" literally \"night-swallow.\"night-hawkhirondelle de nuit")
-;;  (:term " night-night" :def "nursery talk, \"good-night,\" 1896; form  is attested from 1876.nighty-night")
-;;  (:term " night-light (n.)" :def "1640s, \"faint light visible in the sky at night,\" from  +  (n.). As \"small light used in rooms at night to keep them from total darkness\" from 1851.nightlight")
-;;  (:term " night-hawk (n.)" :def "from 1610s in reference to various birds, from  +  (n.). Figurative sense of \"one who stays up and is active at night\" is from 1818.nighthawk")
-;;  (:term " night (n.)" :def "Old English  (West Saxon , Anglian , ) \"night, darkness;\" the vowel indicating that the modern word derives from oblique cases (genitive , dative ), from Proto-Germanic  (cognates: Old Saxon and Old High German , Old Frisian and Dutch , German , Old Norse , Gothic ).
-;; 
-;; The Germanic words are from PIE  \"night\" (cognates: Greek  \"a night,\" Latin , Old Irish , Sanskrit  \"at night,\" Lithuanian  \"night,\" Old Church Slavonic , Russian , Welsh  \"tonight\"), according to Watkins, probably from a verbal root  \"to be dark, be night.\" For spelling with nihtneahtnæhtnehtnihteniht*nakht-nahtnachtNachtnattnahts*nekwt-nuksnoxnochdnaktamnaktisnostinoch'henoid*neg-")
-;;  (:term " nightstick (n.)" :def "also , 1887, from  +  (n.). So called because it was carried on night patrols. night-sticknightstick")
-;;  (:term " night-watch (n.)" :def "\"guard kept during the night,\" late Old English; see  +  (n.).nightwatch")
-;;  (:term " nightclub (n.)" :def "also , \"club open at night,\" 1894, from  +  (n.) in the social sense.night-clubnightclub")
-;;  (:term " nightly (adj.)" :def "Old English  \"nocturnal, of the night, at night;\" see  +  (1). As an adverb, Middle English , from the adjective.nihtlicnight-lynihtlich")
-;;  (:term " nightjar (n.)" :def "nocturnal bird, goatsucker, 1620s, from  +  (v.). So called for the \"jarring\" sounds made by the male when the female is brooding, which have been described as a \"churring trill that seems to change direction as it rises and falls.\" An Old English word for it was  \"night raven.\"nightjarnihthræfn")
-;;  (:term " nightcap (n.)" :def "also , late 14c., \"covering for the head, worn in bed,\" from  +  (n.). In the alcoholic sense, it is attested from 1818. American English sense of \"final event in a sporting contest\" (especially the second game of a baseball double-header) is from 1939.night-capnightcap")
-;;  (:term " nightspot (n.)" :def "also , \"nightclub,\" 1936, from  (n.) +  (n.) \"place.\"night spotnightspot")
-;;  )
-
 (deftest test-show-all #'identity "show all"
   "EXPECT SUCCESS."
   (let* ((seq-defs (dom/children DL))
@@ -246,7 +192,6 @@
     (with-output-to-temp-buffer (get-buffer-create "WAT")
       (switch-to-buffer-other-window "WAT")
       (-each defs
-	;;(-lambda (_ sterm _ sdef) (message "%s -> %s" (capitalize sterm) sdef))
 	(lambda (d) (insert (format "%s -> %s\n" (capitalize (nth 1 d)) (nth 3 d))))))))
 
 (provide 'etymonline)
