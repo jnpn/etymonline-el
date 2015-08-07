@@ -64,10 +64,6 @@
   (cond ((leafp d) d)
 	((nodep d) (cons d (-flatmap #'dom/walk (dom/nodes d))))))
 
-(defvar *html0* (with-current-buffer "html.5.html"
-		  (libxml-parse-html-region (point-min)
-					    (point-max))))
-
 
 ;;; DOM SELECTOR
 
