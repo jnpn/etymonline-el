@@ -12,7 +12,7 @@
 
 (defvar *etym/site* "etymonline.com")
 (defvar *etym/url* "http://etymonline.com/index.php?search=%s")
-(defvar *etym/defs-fmt* "%s -> %s\n")
+(defvar *etym/defs-fmt* "--%s:\n\n  %s\n\n")
 
 ;;; HTTP
 
