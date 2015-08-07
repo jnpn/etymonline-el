@@ -83,7 +83,7 @@
     defs))
 
 (defun etym/parse (term &rest status)
-  "B."
+  "TERM &STATUS."
   (message "[HTTP] %S -> %S" term status)
   (with-current-buffer (current-buffer)
     (etym/do-kill-http-header (current-buffer))
