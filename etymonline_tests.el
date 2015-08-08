@@ -1,6 +1,6 @@
-;;; etymoline_tests.el --- etymonline.el tests...
+;;; etymonline_tests.el --- summary
 ;;; Commentary:
-;;; etymoline_tests
+;;; etymonline_tests
 
 ;;; Code:
 
@@ -85,6 +85,6 @@
       (-each defs
 	(lambda (d) (insert (format "%s -> %s\n" (capitalize (nth 1 d)) (nth 3 d))))))))
 
-(provide 'etymoline_tests)
+(provide 'etymonline_tests)
 
-;;; etymoline_tests.el ends here
+;;; etymonline_tests.el ends here
