@@ -1,12 +1,22 @@
 ;;; etymonline.el --- summary -*- lexical-binding: t -*-
+
 ;;; Commentary:
 ;;; Query Etymonline.com for etymology.
 ;;;
 ;;;   url -> html -> dom -> dom' -> text
 
+;;; Dependencies:
+;;;  - url.el
+;;;  - xml.c (libxml)
+;;;  - dash.el
+;;;  - org.el (org-mode)
+
 ;;; Code:
 
+(require 'url)
+(require 'xml)
 (require 'dash)
+(require 'org)
 
 (setq lexical-binding t)
 
