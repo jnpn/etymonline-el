@@ -14,6 +14,11 @@
 (defvar *etym/url* "http://etymonline.com/index.php?search=%s")
 (defvar *etym/defs-fmt* "--%s:\n\n  %s\n\n")
 
+;;; HELPERS
+
+(defun etym/clean (s)
+  (replace-regexp-in-string "" "" s))
+
 ;;; HTTP
 
 (defun etym/do-kill-http-header (b)
@@ -94,9 +99,9 @@
     (etym/do-kill-http-header (current-buffer))
     (let* ((dom (libxml-parse-html-region (point-min) (point-max)))
 	   (res (etym/find-results dom)))
-      (etym/present-results term res))))
+      (etym/present-buffer term res))))
 
-(defun etym/present-results (term defs)
+(defun etym/present-buffer-modeless (term defs)
   "TERM DEFS: (term def)..."
   (let ((bn (format "%s @ %s" term *etym/site*)))
    (with-output-to-temp-buffer (get-buffer-create bn)
@@ -104,6 +109,19 @@
      (-each defs
        (-lambda ((sterm sdef))
 	 (insert (format *etym/defs-fmt* (capitalize sterm) sdef)))))))
+
+(defun etym/present-buffer (term defs)
+  (with-current-buffer (get-buffer-create (format "*Etym/%s*" term))
+    (insert (format "* %s\n\n" term))
+    (-each defs (-lambda ((dt . dd))
+		  (insert (etym/clean (format "** %s\n  %s\n\n" dt dd)))))
+    ;;; following sequence packs the presentation modes
+    (progn
+      (fill-region (point-min) (point-max))
+      (org-mode)    ;; previously (outline-mode)
+      (show-all)    ;; tried (org-shifttab N) in vain
+      (read-only-mode))
+    (switch-to-buffer (current-buffer))))
 
 (defun etym/main (term)
   "Prompt for TERM and query its etymology."
