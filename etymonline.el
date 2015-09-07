@@ -48,11 +48,18 @@
   "D dom -> [dom]."
   (-filter #'stringp (cddr d)))
 
+;;; such stupid, this is not fs walking
+;; (defun dom/alltext (d)
+;;   "D dom -> [text]."
+;;   (apply #'concat
+;; 	 (-flatten (append (-filter #'stringp (cddr d))
+;; 			   (-map #'dom/alltext (dom/nodes d))))))
+
+;;; such embetterment
 (defun dom/alltext (d)
-  "D dom -> [text]."
-  (apply #'concat
-	 (-flatten (append (-filter #'stringp (cddr d))
-			   (-map #'dom/alltext (dom/nodes d))))))
+  (let ((dispatch (lambda (c) (if (atom c) c (dom/alltext c)))))
+    (mapconcat dispatch (dom/allchildren d) " ")))
+
 
 (defun -flatmap (f l)
   "F L."
