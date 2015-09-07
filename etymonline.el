@@ -130,15 +130,6 @@
 	   (res (etym/find-results dom)))
       (etym/present-buffer term res))))
 
-(defun etym/present-buffer-modeless (term defs)
-  "TERM DEFS: (term def)..."
-  (let ((bn (format "%s @ %s" term *etym/site*)))
-   (with-output-to-temp-buffer (get-buffer-create bn)
-     (switch-to-buffer-other-window bn)
-     (-each defs
-       (-lambda ((sterm sdef))
-	 (insert (format *etym/defs-fmt* (capitalize sterm) sdef)))))))
-
 (defun etym/present-buffer (term defs)
   (with-current-buffer (get-buffer-create (format "*Etym/%s*" term))
     (insert (format "* %s\n\n" term))
