@@ -75,6 +75,25 @@
   (let ((dispatch (lambda (c) (if (atom c) c (dom/alltext c)))))
     (mapconcat dispatch (dom/allchildren d) " ")))
 
+(defun dom/pp (d pn pl)
+  "D dom, PN print-node, PL print-leave."
+  ;; pn : (t, a..., n...) -> str
+  ;; pl : str | int | sym -> str
+  (cond ((or (stringp d) (atom d)) (funcall pl d))
+	((consp d) (funcall pn d (mapconcat
+				  (lambda (d) (dom/pp d pn pl))
+				  (dom/allchildren d) " ")))))
+
+(defun dom/ppp (d)
+  "Default pretty printer D dom."
+
+  (defun pp-tagger (tag) (lambda (sas sns) (format "<%s %s>%s</%s>" tag sas sns tag)))
+
+  (defun pp-attrs (as) (mapconcat (-lambda ((k . v)) (format "%s=%S" k v)) as " "))
+
+  (let ((dpn (lambda (n sns) (funcall (pp-tagger (dom/tag n)) (pp-attrs (dom/attrs n)) sns)))
+	(dpl (lambda (l) l)))
+    (dom/pp d dpn dpl)))
 
 (defun -flatmap (f l)
   "F L."
