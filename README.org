@@ -2,7 +2,85 @@
 * Features
 
 ** WIP history
-** thesaurus mode, general definition query on many websites
-** formatted presentation (grid layout or simple color scheme)
-** WIP tests, cleaning, refactoring
+   - persist it somewhere
+   - etym/history |> ido-completing-read |> etym/main
 
+** thesaurus mode, general definition query on many websites
+   - multiple sources
+   - selection ala org export
+
+** DONE presentation, leverage outline, read-only-mode
+   Prototype with:
+   ```
+   (with-current-buffer (get-buffer-create "*etym*")
+     (-each '(("wat" . "wat....")
+	      ("duh" . "duh....")
+	      ("foo" . "foo...."))
+       (-lambda ((dt . dd))
+	 (insert (format "** %s\n  %s\n\n" dt dd))))
+     (outline-mode)
+     (read-only-mode)
+     (switch-to-buffer (current-buffer)))
+   ```
+
+** DONE formatted presentation (grid layout or simple color scheme)
+   - simple : refill string
+	      s |> temp-buffer |> fill-buffer |> bsnp ... eww
+   - medium : custom refill
+     (for (buffer-lines) :as l :being (> (len l) (some-width))
+       (->
+	 kill
+	 new <- (refill l)
+	 indent-a-bit
+	 insert))
+
+   - !simple: syntax table, overlay for paragraphs,
+	      extend help-mode-map on the fly
+	      see *-mode
+
+** DONE encoding cleaning
+   :LOGBOOK:
+   CLOCK: [2015-09-07 Mon 00:50]--[2015-09-07 Mon 00:58] =>  0:08
+   :END:
+   (regex-replace "" "")
+
+   see [[etymonline.el]]:etym/clean and etym/present-buffer
+
+
+** major mode: etymonline-mode, thesaurus-mode ?
+   derive from help
+   provide rows formatting
+     overlay for row at point
+     overlay for term
+   provide ibuffer grouping filter (filter on ...-mode)
+
+** WIP tests, cleaning, refactoring
+   - ert? cask?
+
+** NIH dom.el
+   - dom/clean pred (@ dom/filter)
+     clone tree except those matchin pred
+   - dom/keep: dual of clean
+   - dom/sizzle dom sel
+     sizzle in el
+     sel = tag | class | id |? sel
+
+** NIH scrapel.el
+   - with-html url .. nah, idiotic, dysfunctional
+   - req url -> (buf, status, header-fun, body-fun)
+
+** decouple callback
+   decouple from:
+     url -> parse
+   to:
+     url -> (parse |> find |> present)
+
+** unify buffer name generation
+   avoid names collisions
+   look at conventions for name readability and pseudo semanticsp
+
+** Documentation and source
+
+*** DONE Comments with dependencies
+
+*** DONE foreach dep (require dep)
