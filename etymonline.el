@@ -20,9 +20,12 @@
 
 (setq lexical-binding t)
 
-(defvar *etym/site* "etymonline.com")
-(defvar *etym/url* "http://etymonline.com/index.php?search=%s")
 (defvar *etym/defs-fmt* "--%s:\n\n  %s\n\n")
+
+(defvar *etym/sources*
+  '(("etymonline.com" . "http://etymonline.com/index.php?search=%s")))
+
+(defvar *etym/default-source* "etymonline.com")
 
 ;;; HELPERS
 
