@@ -53,8 +53,8 @@
   (let ((root (tmpl (t s d) " -- %s @%s\n\n%s"))
 	(def (tmpl (dt dd) "* %s %s")))
     (@ root t s
-	    (mapconcat (unpair def) (OH? d) "\n"))))
-;;; a bit better, but ds is not a cons cell, but a 2-list. BUG
+	    (mapconcat (lambda (d) (apply def d)) d "\n"))))
+;;; no need for unpair anymore since d is a list, just meta `apply'
 
 
 (defvar *etym/default-view* #'etym/simple-view)
