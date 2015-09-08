@@ -20,24 +20,37 @@
 
 (setq lexical-binding t)
 
-(defvar *etym/defs-fmt* "--%s:\n\n  %s\n\n")
+(defalias '@ 'funcall)
+;; (@ (lambda (x) (+ x 1)) 10)
+
+(defmacro tmpl (args &rest body)
+  "usage (tmpl (x y z) <body>)
+-> (lambda (x y z) (format <body> x y z))
+"
+  (if (and (= 1 (length body))
+	   (stringp (car body)))
+   `(lambda ,args
+      (format ,@body ,@args))
+   (error "body is not a string")))
+
 ;;; PRESENTATION ~BACKEND ...
 
 (defvar *etym/defs-fmt* "--%s:\n\n  %s\n\n") ;; crude
 
 ;; Flow: service -> term -> (buf, HTTP, DOM) -> service, term, [(dt, dd)]
 ;; so presentation is service, term, defs -> ...
-(defun etym/simple-view (service term defs)
-  (let ((root-fmt " -- %s @%S\n\n%s")
-	(def-fmt "* %s: %s\n"))
-    (format root-fmt (etym/clean term) service
-	    (mapconcat (lambda (def)
-			 (format def-fmt
-				 (etym/clean (car def))
-				 (etym/clean (cdr def))))
-		       defs "\n"))))
+(defun etym/simple-view (s t d)
+  (let ((root (tmpl (t s d) " -- %s @%s\n\n%s"))
+	(def (tmpl (dt dd) "* %s %s")))
+    (@ root t s
+	    (mapconcat (lambda (pair)
+			 (let ((dt (car pair))
+			       (dd (cdr pair)))
+			   (@ def dt dd)))
+		       d
+		       "\n"))))
+;;; new version, macros. but too much local lambda
 
-;;; ^--- tiny bugged, ugly too
 (defvar *etym/default-view* #'etym/simple-view)
 
 (defvar *etym/sources*
