@@ -124,14 +124,13 @@
 	 (seq-defs (-map #'dom/alltext (dom/nodes first-dl))))
     (-partition 2 seq-defs)))
 
-(defun etym/parse (term &rest status)
-  "TERM &STATUS."
-  (message "[HTTP] %S -> %S" term status)
-  (with-current-buffer (current-buffer)
-    (etym/do-kill-http-header (current-buffer))
+(defun etym/parse (buf term)
+  "BUF TERM."
+  (with-current-buffer buf
+    (etym/do-kill-http-header buf)
     (let* ((dom (libxml-parse-html-region (point-min) (point-max)))
 	   (res (etym/find-results dom)))
-      (etym/present-buffer term res))))
+      res)))
 
 (defun etym/present-buffer (term defs)
   (with-current-buffer (get-buffer-create (format "*Etym/%s*" term))
@@ -149,9 +148,11 @@
 (defun etym/main (term)
   "Prompt for TERM and query its etymology."
   (interactive "sTerm: ")
-  (let ((callback (lambda (&rest status)
-		    (etym/parse term status))))
-   (url-retrieve (format *etym/url* term) callback)))
+  (let* ((service (assoc *etym/default-source* *etym/sources*))
+	 (url (cdr service)))
+    (let* ((buf (url-retrieve-synchronously (format url term)))
+	   (res (etym/parse buf term)))
+      (etym/present-buffer term res))))
 
 
 (provide 'etymonline)
