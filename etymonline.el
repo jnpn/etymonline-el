@@ -62,6 +62,24 @@
 ;; then org mode thinks all lines are outlines.. FAIL
 
 
+;; (@ (tmpl (a b c) "%s.%s-%s") "a" "A" "Á")
+
+;;; Investigating use of patterns. (FAILS with naive idea)
+;; (@ (-lambda ((a . b)) (list b a)) (cons 1 2))
+;; (@ (-lambda (x y z) (list z x y)) 1 2 3)
+
+;; (defmacro tmpl (args &rest body)
+;;   "usage (tmpl (x y z) <body>)
+;; -> (lambda (x y z) (format <body> x y z))
+;; "
+;;   (if (and (= 1 (length body))
+;; 	   (stringp (car body)))
+;;    `(-lambda ,args
+;;       (format ,@body ,@args))
+;;    (error "body is not a string")))
+
+;;; (@ (tmpl ((a . b)) "%s: %s") (cons "foo" "bar")) FAIL
+
 (defvar *etym/default-view* #'etym/simple-view)
 
 (defvar *etym/sources*
