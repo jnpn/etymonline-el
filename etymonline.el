@@ -51,10 +51,15 @@
 ;; so presentation is service, term, defs -> ...
 (defun etym/simple-view (s t d)
   (let ((root (tmpl (t s d) " -- %s @%s\n\n%s"))
-	(def (tmpl (dt dd) "* %s %s")))
+	(def (tmpl (dt dd) "* %s %s\n"))) ;; WARNING see below about "\n"
     (@ root t s
 	    (mapconcat (lambda (d) (apply def d)) d "\n"))))
-;;; no need for unpair anymore since d is a list, just meta `apply'
+;; the trailing \n has nasty implications related to
+;; fill-region, and org-mode
+;; Without it, definitions aren't seen as paragraphs
+;; and fill-region will prefix all lines with a *
+;; as it's the first char ?
+;; then org mode thinks all lines are outlines.. FAIL
 
 
 (defvar *etym/default-view* #'etym/simple-view)
