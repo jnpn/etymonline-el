@@ -21,7 +21,18 @@
 (setq lexical-binding t)
 
 (defalias '@ 'funcall)
-;; (@ (lambda (x) (+ x 1)) 10)
+
+;;; DEBUG
+
+(defun OH? (x) (message "[OH] %S" x) x)
+
+;;; PRELUDE
+
+(defun unpair (f)
+  (lambda (pair)
+    (let ((hd (car pair))
+	  (tl (cdr pair)))
+      (@ f hd tl))))
 
 (defmacro tmpl (args &rest body)
   "usage (tmpl (x y z) <body>)
@@ -33,19 +44,7 @@
       (format ,@body ,@args))
    (error "body is not a string")))
 
-;;; DEBUG
-
-(defun OH? (x) (message "[OH] %S" x) x)
-
 ;;; PRESENTATION ~BACKEND ...
-
-(defvar *etym/defs-fmt* "--%s:\n\n  %s\n\n") ;; crude
-
-(defun unpair (f)
-  (lambda (pair)
-    (let ((hd (car pair))
-	  (tl (cdr pair)))
-      (@ f hd tl))))
 
 ;; Flow: service -> term -> (buf, HTTP, DOM) -> service, term, [(dt, dd)]
 ;; so presentation is service, term, defs -> ...
@@ -62,6 +61,8 @@
 ;; then org mode thinks all lines are outlines.. FAIL
 
 (defvar *etym/default-view* #'etym/simple-view)
+
+;;; SERVICES
 
 (defvar *etym/sources*
   '(("etymonline.com" . "http://etymonline.com/index.php?search=%s")))
