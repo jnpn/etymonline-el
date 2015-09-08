@@ -63,6 +63,14 @@
      overlay for term
    provide ibuffer grouping filter (filter on ...-mode)
 
+*** TODO mode-map
+#+BEGIN_SRC emacs-lisp
+  '(("q" . bury-buffer)
+    ("g" . etym/refresh-buffer)
+    (...))
+#+END_SRC
+
+
 ** WIP tests, cleaning, refactoring
    - ert? cask?
 
