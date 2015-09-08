@@ -85,6 +85,7 @@
     (list 1 (point) b)))
 
 
+;;; SXML Abstraction Layer
 ;;; DOM
 ;;; dom := (tag (attr...) dom-or-text...)
 
@@ -108,14 +109,6 @@
   "D dom -> [dom]."
   (-filter #'stringp (cddr d)))
 
-;;; such stupid, this is not fs walking
-;; (defun dom/alltext (d)
-;;   "D dom -> [text]."
-;;   (apply #'concat
-;; 	 (-flatten (append (-filter #'stringp (cddr d))
-;; 			   (-map #'dom/alltext (dom/nodes d))))))
-
-;;; such embetterment
 (defun dom/alltext (d)
   (let ((dispatch (lambda (c) (if (atom c) c (dom/alltext c)))))
     (mapconcat dispatch (dom/allchildren d) " ")))
@@ -175,6 +168,8 @@
       res)))
 
 (defun etym/present-buffer (service term defs)
+  "SERVICE is the pair (name . url) to which TERM was queried.
+Giving the list of pair DEFS (noun . definition)."
   (with-current-buffer (get-buffer-create (format "*Etym/%s*" term))
     (let ((view (@ *etym/default-view* service term defs)))
       (insert view))
