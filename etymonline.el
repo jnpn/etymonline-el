@@ -132,7 +132,7 @@
 	   (res (etym/find-results dom)))
       res)))
 
-(defun etym/present-buffer (term defs)
+(defun etym/present-buffer (service term defs)
   (with-current-buffer (get-buffer-create (format "*Etym/%s*" term))
     (insert (format "* %s\n\n" term))
     (-each defs (-lambda ((dt . dd))
@@ -152,7 +152,7 @@
 	 (url (cdr service)))
     (let* ((buf (url-retrieve-synchronously (format url term)))
 	   (res (etym/parse buf term)))
-      (etym/present-buffer term res))))
+      (etym/present-buffer service term res))))
 
 
 (provide 'etymonline)
