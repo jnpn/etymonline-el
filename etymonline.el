@@ -124,8 +124,8 @@
   "D dom, PN print-node, PL print-leave."
   ;; pn : (t, a..., n...) -> str
   ;; pl : str | int | sym -> str
-  (cond ((or (stringp d) (atom d)) (funcall pl d))
-	((consp d) (funcall pn d (mapconcat
+  (cond ((or (stringp d) (atom d)) (@ pl d))
+	((consp d) (@ pn d (mapconcat
 				  (lambda (d) (dom/pp d pn pl))
 				  (dom/allchildren d) " ")))))
 
@@ -136,7 +136,7 @@
 
   (defun pp-attrs (as) (mapconcat (-lambda ((k . v)) (format "%s=%S" k v)) as " "))
 
-  (let ((dpn (lambda (n sns) (funcall (pp-tagger (dom/tag n)) (pp-attrs (dom/attrs n)) sns)))
+  (let ((dpn (lambda (n sns) (@ (pp-tagger (dom/tag n)) (pp-attrs (dom/attrs n)) sns)))
 	(dpl (lambda (l) l)))
     (dom/pp d dpn dpl)))
 
@@ -176,7 +176,7 @@
 
 (defun etym/present-buffer (service term defs)
   (with-current-buffer (get-buffer-create (format "*Etym/%s*" term))
-    (let ((view (funcall *etym/default-view* service term defs)))
+    (let ((view (@ *etym/default-view* service term defs)))
       (insert view))
     ;;; following sequence packs the presentation modes
     (progn
