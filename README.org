@@ -1,4 +1,10 @@
-#+STARTUP: indent
+#+TITLE:       etymonline.el README
+#+AUTHOR:      Johan PONIN
+#+DATE:        <2015-08-28 Fri>
+#+EMAIL:       johan.ponin.pro@gmail.com
+#+LANGUAGE:    en
+#+OPTIONS:     H:2 num:t toc:t \n:nil ::t |:t ^:t f:t tex:t
+#+STARTUP:     indent
 * Features
 
 ** TODO endo-hyper-text /from .../ -> new query
