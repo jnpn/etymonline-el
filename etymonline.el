@@ -21,6 +21,24 @@
 (setq lexical-binding t)
 
 (defvar *etym/defs-fmt* "--%s:\n\n  %s\n\n")
+;;; PRESENTATION ~BACKEND ...
+
+(defvar *etym/defs-fmt* "--%s:\n\n  %s\n\n") ;; crude
+
+;; Flow: service -> term -> (buf, HTTP, DOM) -> service, term, [(dt, dd)]
+;; so presentation is service, term, defs -> ...
+(defun etym/simple-view (service term defs)
+  (let ((root-fmt " -- %s @%S\n\n%s")
+	(def-fmt "* %s: %s\n"))
+    (format root-fmt (etym/clean term) service
+	    (mapconcat (lambda (def)
+			 (format def-fmt
+				 (etym/clean (car def))
+				 (etym/clean (cdr def))))
+		       defs "\n"))))
+
+;;; ^--- tiny bugged, ugly too
+(defvar *etym/default-view* #'etym/simple-view)
 
 (defvar *etym/sources*
   '(("etymonline.com" . "http://etymonline.com/index.php?search=%s")))
