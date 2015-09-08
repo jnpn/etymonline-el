@@ -175,9 +175,8 @@
 
 (defun etym/present-buffer (service term defs)
   (with-current-buffer (get-buffer-create (format "*Etym/%s*" term))
-    (insert (format "* %s\n\n" term))
-    (-each defs (-lambda ((dt . dd))
-		  (insert (etym/clean (format "** %s\n  %s\n\n" dt dd)))))
+    (let ((view (funcall *etym/default-view* service term defs)))
+      (insert view))
     ;;; following sequence packs the presentation modes
     (progn
       (fill-region (point-min) (point-max))
