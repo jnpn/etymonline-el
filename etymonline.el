@@ -33,9 +33,19 @@
       (format ,@body ,@args))
    (error "body is not a string")))
 
+;;; DEBUG
+
+(defun OH? (x) (message "[OH] %S" x) x)
+
 ;;; PRESENTATION ~BACKEND ...
 
 (defvar *etym/defs-fmt* "--%s:\n\n  %s\n\n") ;; crude
+
+(defun unpair (f)
+  (lambda (pair)
+    (let ((hd (car pair))
+	  (tl (cdr pair)))
+      (@ f hd tl))))
 
 ;; Flow: service -> term -> (buf, HTTP, DOM) -> service, term, [(dt, dd)]
 ;; so presentation is service, term, defs -> ...
@@ -43,13 +53,9 @@
   (let ((root (tmpl (t s d) " -- %s @%s\n\n%s"))
 	(def (tmpl (dt dd) "* %s %s")))
     (@ root t s
-	    (mapconcat (lambda (pair)
-			 (let ((dt (car pair))
-			       (dd (cdr pair)))
-			   (@ def dt dd)))
-		       d
-		       "\n"))))
-;;; new version, macros. but too much local lambda
+	    (mapconcat (unpair def) (OH? d) "\n"))))
+;;; a bit better, but ds is not a cons cell, but a 2-list. BUG
+
 
 (defvar *etym/default-view* #'etym/simple-view)
 
