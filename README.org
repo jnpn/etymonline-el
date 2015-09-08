@@ -1,13 +1,15 @@
 
 * Features
 
-** WIP history
+** TODO WIP history
    - persist it somewhere
    - etym/history |> ido-completing-read |> etym/main
 
 ** thesaurus mode, general definition query on many websites
-   - multiple sources
-   - selection ala org export
+*** DONE multiple sources
+    we have a service list now, with etymonline.com as default
+
+*** selection ala org export
 
 ** DONE presentation, leverage outline, read-only-mode
    Prototype with:
@@ -46,6 +48,9 @@
 
    see [[etymonline.el]]:etym/clean and etym/present-buffer
 
+** TODO ~mode: etym
+   - defgroup
+   - defcustom
 
 ** major mode: etymonline-mode, thesaurus-mode ?
    derive from help
@@ -69,7 +74,8 @@
    - with-html url .. nah, idiotic, dysfunctional
    - req url -> (buf, status, header-fun, body-fun)
 
-** decouple callback
+** CANCEL decouple callback
+   # no more async
    decouple from:
      url -> parse
    to:
