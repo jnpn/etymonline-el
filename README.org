@@ -1,5 +1,9 @@
-
+#+STARTUP: indent
 * Features
+
+** TODO endo-hyper-text /from .../ -> new query
+   parse "from ....?"
+   -> overlay (mouse . (call-interactively etym/main self))
 
 ** TODO WIP history
    - persist it somewhere
