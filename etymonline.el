@@ -11,6 +11,11 @@
 ;;;  - dash.el
 ;;;  - org.el (org-mode)
 
+;;;
+;;; Usage:
+;;;  M-x etym/main <TERM> RET
+;;;
+
 ;;; Code:
 
 (require 'url)
