@@ -62,6 +62,10 @@
    - defgroup
    - defcustom
 
+** TODO rewrite parsing stage
+- etymonline.com changed its output..
+- need an actual dom selector function
+
 ** major mode: etymonline-mode, thesaurus-mode ?
    derive from help
    provide rows formatting

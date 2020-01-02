@@ -70,7 +70,8 @@
 ;;; SERVICES
 
 (defvar *etym/sources*
-  '(("etymonline.com" . "http://etymonline.com/index.php?search=%s")))
+  '(("old.etymonline.com" . "http://etymonline.com/index.php?search=%s")
+    ("etymonline.com" . "https://www.etymonline.com/search?q=%s")))
 
 (defvar *etym/default-source* "etymonline.com")
 
