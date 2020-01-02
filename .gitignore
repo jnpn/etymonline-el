@@ -2,3 +2,4 @@
 /.projectile
 *flycheck*
 #*
+*elc*
