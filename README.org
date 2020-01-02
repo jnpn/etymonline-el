@@ -63,9 +63,19 @@
    - defcustom
 
 ** TODO rewrite parsing stage
+
 - etymonline.com changed its output..
 - need an actual dom selector function
 
+*** css classes
+total: '.searchList__pageCount--2jQdB'
+items: '.word--C9UPa' '.word_4pc--2SZw8'
+pages: '.ant-pagination-item' '.ant-pagination-item-{{page}}'
+  url: '/search?page=2&amp;q={{term}}'
+
+*** DONE rescaffold
+*** DONE remove internal defuns
+*** DONE add provides
 ** major mode: etymonline-mode, thesaurus-mode ?
    derive from help
    provide rows formatting
