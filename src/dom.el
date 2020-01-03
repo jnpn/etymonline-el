@@ -14,6 +14,12 @@
   "Attrs of D."
   (cadr d))
 
+(defun dom/class (node)
+  (->
+   node
+   dom/attrs
+   (f-assoc 'class)))
+
 (defsubst dom/allchildren (d)
   "D dom -> [dom or text]."
   (cddr d))

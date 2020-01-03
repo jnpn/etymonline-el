@@ -4,6 +4,7 @@
 ;;; Query Etymonline.com for etymology.
 ;;;
 ;;;   url -> html -> dom -> dom' -> text
+;;;     etym/h etym/d     
 
 ;;; Dependencies:
 ;;;  - url.el
@@ -13,7 +14,7 @@
 
 ;;;
 ;;; Usage:
-;;;  M-x etym/main <TERM> RET
+;;;  M-x etym/query <TERM> RET
 ;;;
 
 ;;; Code:
@@ -37,15 +38,23 @@
 
 (defvar *etym/default-source* "word.etymonline.com")
 
+(defun get-service-url ()
+  ":: () -> string"
+  (let* ((service (assoc *etym/default-source* *etym/sources*)))
+    (cdr service)))
+
 ;;; HELPERS
 
 (defun etym/clean (s)
+  ":: string -> string"
   (replace-regexp-in-string "" "" s))
 
 ;;; HTTP
 
 (defun etym/do-kill-http-header (b)
-  "B."
+  "B. buffer with http response.
+kill-region from point-min to first occurence of \n\n
+buffer -> buffer <-http>"
   (with-current-buffer b
     (goto-char (point-min))
     (re-search-forward "\n\n")
@@ -55,8 +64,8 @@
 ;;; PRESENTATION ~BACKEND ...
 
 ;; Flow: service -> term -> (buf, HTTP, DOM) -> service, term, [(dt, dd)]
-;; so presentation is service, term, defs -> ...
 (defun etym/simple-view (s te d)
+  "service -> term -> list-of-pairs -> string"
   (let ((root (tmpl (te s d) " -- %s @%s\n\n%s"))
         (def (tmpl (dt dd) "* %s %s\n"))) ;; WARNING see below about "\n"
     (@ root te s
@@ -73,13 +82,15 @@
 ;;; MAIN
 
 (defun etym/find-results (dom)
-  "DOM : dl > (dt dd)... -> (term definition)..."
+  "DOM : dl > (dt dd)... -> (term definition)...
+find-results :: dom -> list-of-pairs"
   (let* ((first-dl (car (dom/simple-select dom 'dl)))
          (seq-defs (-map #'dom/alltext (dom/nodes first-dl))))
     (-partition 2 seq-defs)))
 
 (defun etym/parse (buf term)
-  "BUF TERM."
+  "BUF TERM.
+parse :: buf -> dom"
   (with-current-buffer buf
     (message ">>> %s %s" buf term)
     (etym/do-kill-http-header buf)
@@ -87,27 +98,30 @@
            (res (etym/find-results dom)))
       res)))
 
-(defun etym/present-buffer (service term defs)
+(defun etym/fill-view (service term defs)
   "SERVICE is the pair (name . url) to which TERM was queried.
 Giving the list of pair DEFS (noun . definition)."
-  (with-current-buffer (get-buffer-create (format "*Etym/%s*" term))
-    (let ((view (@ *etym/default-view* service term defs)))
-      (insert view))
-    ;;; following sequence packs the presentation modes
+  (let ((b (get-buffer-create (format "*Etym/%s*" term))))
+    (with-current-buffer b
+      (let ((view (@ *etym/default-view* service term defs)))
+        (insert view)))
+    b))
+
+(defun etym/enhance-view (buf)
+  "enhance-view :: buffer -> ()"
+  (with-current-buffer buf
     (progn
       (fill-region (point-min) (point-max))
-      (org-mode)    ;; previously (outline-mode)
-      (outline-show-all)    ;; tried (org-shifttab N) in vain
+      (org-mode)        ;; previously (outline-mode)
+      (outline-show-all) ;; tried (org-shifttab N) in vain
       (read-only-mode))
     (switch-to-buffer (current-buffer))))
 
-(defun etym/main (term)
+(defun etym/query (term)
   "Prompt for TERM and query its etymology."
   (interactive "sTerm: ")
-  (let* ((service (assoc *etym/default-source* *etym/sources*))
-	     (url (cdr service)))
+  (let ((url (get-service-url)))
     (eww (format url term))))
-
 
 (provide 'etymonline)
 
